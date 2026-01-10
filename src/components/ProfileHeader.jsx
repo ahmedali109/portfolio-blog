@@ -13,7 +13,10 @@ export default function ProfileHeader({
           {/* Profile Image */}
           <div className="shrink-0">
             <img
-              src="/assets/profile.webp"
+              src={
+                new URL("../../public/assets/profile.webp", import.meta.url)
+                  .href
+              }
               alt="Ahmed Aly"
               className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-lg object-cover border-4 border-blue-400"
             />
