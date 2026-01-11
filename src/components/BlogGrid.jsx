@@ -2,7 +2,7 @@ import BlogCard from "./BlogCard";
 
 export default function BlogGrid({ posts, activeCategory, onPostClick }) {
   const filteredPosts =
-    activeCategory === "All posts"
+    activeCategory === "all"
       ? posts
       : posts.filter((post) => post.category === activeCategory);
 
