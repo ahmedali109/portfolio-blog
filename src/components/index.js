@@ -3,3 +3,5 @@ export { default as FilterButtons } from "./FilterButtons";
 export { default as BlogCard } from "./BlogCard";
 export { default as BlogGrid } from "./BlogGrid";
 export { default as BlogDetailsPage } from "./BlogDetailsPage";
+export { default as LanguageSwitcher } from "./LanguageSwitcher";
+export { default as ThemeSwitcher } from "./ThemeSwitcher";
