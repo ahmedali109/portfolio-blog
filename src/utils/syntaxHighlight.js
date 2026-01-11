@@ -1,39 +1,77 @@
 // Simple syntax highlighter for code blocks
 export const highlightCode = (code) => {
+  // Create an array to store replacements and their positions
+  const replacements = [];
+
+  // Helper function to add a replacement
+  const addReplacement = (pattern, className, replacement) => {
+    let match;
+    const regex = new RegExp(pattern, "gm");
+    while ((match = regex.exec(code)) !== null) {
+      replacements.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="${className}">${replacement(match)}</span>`,
+      });
+    }
+  };
+
   // Keywords
-  const keywords =
-    /\b(const|let|var|function|return|if|else|for|while|import|export|from|class|extends|async|await|new|try|catch|throw|typeof|instanceof|switch|case|break|continue|default|do|in|of|this|super|static|get|set|null|undefined|true|false|void|delete)\b/g;
-
-  // Strings
-  const strings = /(".*?"|'.*?'|`.*?`)/g;
-
-  // Comments
-  const comments = /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm;
+  addReplacement(
+    /\b(const|let|var|function|return|if|else|for|while|import|export|from|class|extends|async|await|new|try|catch|throw|typeof|instanceof|switch|case|break|continue|default|do|in|of|this|super|static|get|set|null|undefined|true|false|void|delete)\b/g,
+    "text-purple-400 font-semibold",
+    (m) => m[0]
+  );
 
   // Numbers
-  const numbers = /\b(\d+\.?\d*)\b/g;
-
-  // Functions
-  const functions = /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g;
+  addReplacement(/\b(\d+\.?\d*)\b/g, "text-orange-400", (m) => m[0]);
 
   // HTML tags
-  const htmlTags = /(&lt;\/?\w+[^&]*?&gt;|<\/?[\w\s="/.':;#-\/]+>)/g;
+  addReplacement(
+    /(&lt;\/?\w+[^&]*?&gt;|<\/?[\w\s="/.':;#-\/]+>)/g,
+    "text-pink-400",
+    (m) => m[0]
+  );
 
   // CSS properties
-  const cssProperties =
-    /\b(display|position|color|background|padding|margin|border|width|height|flex|grid|font|text|animation|transition|transform|opacity|z-index|top|left|right|bottom|content|overflow|cursor)\s*:/g;
+  addReplacement(
+    /\b(display|position|color|background|padding|margin|border|width|height|flex|grid|font|text|animation|transition|transform|opacity|z-index|top|left|right|bottom|content|overflow|cursor)\s*:/g,
+    "text-cyan-400",
+    (m) => m[0]
+  );
 
+  // Comments (should be after keywords to avoid highlighting keywords in comments)
+  addReplacement(
+    /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
+    "text-gray-500 italic",
+    (m) => m[0]
+  );
+
+  // Strings (should be last to avoid highlighting special chars inside strings)
+  addReplacement(/(".*?"|'.*?'|`.*?`)/g, "text-green-400", (m) => m[0]);
+
+  // Sort replacements by start position (descending) to replace from end to start
+  replacements.sort((a, b) => b.start - a.start);
+
+  // Remove overlapping replacements
+  const finalReplacements = [];
+  replacements.forEach((replacement) => {
+    const overlaps = finalReplacements.some(
+      (r) => replacement.start < r.end && replacement.end > r.start
+    );
+    if (!overlaps) {
+      finalReplacements.push(replacement);
+    }
+  });
+
+  // Apply replacements from end to start to maintain correct positions
   let highlighted = code;
-
-  // Apply syntax highlighting
-  highlighted = highlighted
-    .replace(comments, '<span class="text-gray-500 italic">$1</span>')
-    .replace(strings, '<span class="text-green-400">$1</span>')
-    .replace(keywords, '<span class="text-purple-400 font-semibold">$1</span>')
-    .replace(numbers, '<span class="text-orange-400">$1</span>')
-    .replace(functions, '<span class="text-yellow-400">$1</span>(')
-    .replace(htmlTags, '<span class="text-pink-400">$1</span>')
-    .replace(cssProperties, '<span class="text-cyan-400">$1</span>:');
+  finalReplacements.forEach((replacement) => {
+    highlighted =
+      highlighted.substring(0, replacement.start) +
+      replacement.replacement +
+      highlighted.substring(replacement.end);
+  });
 
   return highlighted;
 };
