@@ -1,12 +1,26 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/portfolio-blog/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog</title>
-    <script type="module" crossorigin src="/portfolio-blog/assets/index-DiFu2SG_.js"></script>
-    <link rel="stylesheet" crossorigin href="/portfolio-blog/assets/index-C5rZAfwf.css">
+    <script>
+      // Initialize theme from localStorage before React renders
+      const theme = localStorage.getItem("theme") || "dark";
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      // Initialize language and ensure LTR/RTL
+      const lang = localStorage.getItem("language") || "en";
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    </script>
+    <script type="module" crossorigin src="/portfolio-blog/assets/index-D1wVu590.js"></script>
+    <link rel="stylesheet" crossorigin href="/portfolio-blog/assets/index-BUE6yLWt.css">
   </head>
   <body>
     <div id="root"></div>
