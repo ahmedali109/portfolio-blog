@@ -1,3 +1,5 @@
+import { blogDataByLanguage } from "./blogData";
+
 // Utility to convert structured blog data to content format
 export const convertBlogDataToContent = (blog) => {
   let htmlContent = "";
@@ -28,4 +30,9 @@ export const formatBlogPosts = (blogs) => {
     ...blog,
     content: convertBlogDataToContent(blog),
   }));
+};
+
+// Get blog data by language
+export const getBlogDataByLanguage = (language) => {
+  return blogDataByLanguage[language] || blogDataByLanguage.en;
 };

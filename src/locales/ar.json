@@ -1,0 +1,28 @@
+{
+  "profile": {
+    "name": "أحمد علي",
+    "role": "مهندس برمجيات"
+  },
+  "categories": {
+    "all": "جميع المنشورات",
+    "html": "HTML",
+    "css": "CSS",
+    "javascript": "JavaScript"
+  },
+  "blog": {
+    "latestArticles": "أحدث المقالات",
+    "readArticle": "اقرأ المقالة",
+    "readMore": "اقرأ أكثر",
+    "back": "عودة",
+    "relatedArticles": "مقالات ذات صلة",
+    "moreIn": "المزيد في",
+    "copied": "تم النسخ!",
+    "copy": "نسخ"
+  },
+  "theme": {
+    "dark": "داكن",
+    "light": "فاتح",
+    "system": "النظام"
+  },
+  "language": "اللغة"
+}

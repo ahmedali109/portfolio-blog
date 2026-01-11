@@ -1,0 +1,28 @@
+{
+  "profile": {
+    "name": "Ahmed Aly",
+    "role": "Software Engineer"
+  },
+  "categories": {
+    "all": "All posts",
+    "html": "HTML",
+    "css": "CSS",
+    "javascript": "JavaScript"
+  },
+  "blog": {
+    "latestArticles": "Latest Articles",
+    "readArticle": "Read article",
+    "readMore": "Read More",
+    "back": "Back",
+    "relatedArticles": "Related Articles",
+    "moreIn": "More in",
+    "copied": "Copied!",
+    "copy": "Copy"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  },
+  "language": "Language"
+}
