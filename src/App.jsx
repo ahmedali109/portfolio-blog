@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { ProfileHeader, BlogGrid, BlogDetailsPage } from "./components";
 import { LanguageSwitcher, ThemeSwitcher } from "./components";
+import DynamicIsland from "./components/DynamicIsland";
 import { blogDataByLanguage } from "./data/blogData";
 import { formatBlogPosts } from "./data/blogUtils";
 import { useI18n } from "./context/useI18n";
@@ -11,6 +12,7 @@ function App() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAnimation, setShowAnimation] = useState(true);
 
   // Get blog posts based on current language
   const BLOG_POSTS = useMemo(() => {
@@ -62,12 +64,22 @@ function App() {
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
       {/* Always visible: Theme and Language switchers */}
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <ThemeSwitcher />
-        <LanguageSwitcher />
-      </div>
+      {!showAnimation && (
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <ThemeSwitcher />
+          <LanguageSwitcher />
+        </div>
+      )}
 
-      {selectedPost ? (
+      {showAnimation ? (
+        <DynamicIsland
+          onAnimationComplete={() => {
+            setTimeout(() => {
+              setShowAnimation(false);
+            }, 1500);
+          }}
+        />
+      ) : selectedPost ? (
         <BlogDetailsPage
           post={selectedPost}
           allPosts={BLOG_POSTS}
@@ -76,6 +88,11 @@ function App() {
         />
       ) : (
         <>
+          <div className="fixed top-4 right-4 z-50 flex gap-2">
+            <ThemeSwitcher />
+            <LanguageSwitcher />
+          </div>
+
           <ProfileHeader
             categories={CATEGORIES}
             activeCategory={activeCategory}
