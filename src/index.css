@@ -86,6 +86,67 @@ body {
   }
 }
 
+/* Dynamic Island Animation */
+.dynamic-island-container {
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  padding-top: 1rem;
+}
+
+.dynamic-island-container .pills {
+  display: block;
+  width: 8rem;
+  height: 2rem;
+  background: #000;
+  border-radius: 6rem;
+  transition: all 0.6s cubic-bezier(0.32, 0.7, 0.22, 1.2);
+  cursor: pointer;
+  animation: DynamicIsland 0.8s ease-out forwards 1s;
+  -webkit-animation: DynamicIsland 0.8s ease-out forwards 1s;
+  position: relative;
+}
+
+.dynamic-island-container .container-img {
+  width: 7.5rem;
+  height: 7.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  transition: all 0.6s cubic-bezier(0.32, 0.7, 0.22, 1.2);
+  filter: blur(1rem);
+  opacity: 0;
+  pointer-events: none;
+  animation: faceID 0.8s ease-out forwards 1.5s;
+  -webkit-animation: faceID 0.8s ease-out forwards 1.5s;
+}
+
+.dynamic-island-container .container-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes faceID {
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes DynamicIsland {
+  100% {
+    width: 11.5rem;
+    height: 12rem;
+    border-radius: 2.2rem;
+  }
+}
+
 /* Prose content readability: lists and blockquotes */
 .prose ul,
 .prose ol {
