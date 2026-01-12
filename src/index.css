@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --font-bebas: "Bebas Neue", sans-serif;
+  --font-bebas: "JetBrains Mono", sans-serif;
 }
 
 @font-face {
-  font-family: "Bebas Neue";
-  src: url("/fonts/BebasNeue-Regular.ttf") format("truetype");
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Italic.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -84,4 +84,45 @@ body {
     background: linear-gradient(180deg, #60a5fa, #3b82f6);
     border: 1px solid #374151;
   }
+}
+
+/* Prose content readability: lists and blockquotes */
+.prose ul,
+.prose ol {
+  margin-left: 1.25rem; /* indent */
+  padding-left: 0.75rem; /* bullet spacing */
+}
+
+.prose ul li,
+.prose ol li {
+  margin-bottom: 0.5rem;
+  color: #374151; /* gray-700 */
+}
+
+.dark .prose ul li,
+.dark .prose ol li {
+  color: #d1d5db; /* gray-300 */
+}
+
+.prose ul li::marker {
+  color: #60a5fa; /* blue-400 bullets */
+}
+
+.prose ol li::marker {
+  color: #93c5fd; /* blue-300 numbers */
+}
+
+.prose blockquote {
+  border-left: 4px solid #60a5fa; /* blue-400 */
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #1f2937; /* gray-800 for text */
+  background: rgba(96, 165, 250, 0.08);
+  border-radius: 0.25rem;
+}
+
+.dark .prose blockquote {
+  border-left-color: #3b82f6; /* blue-500 */
+  color: #e5e7eb; /* gray-200 */
+  background: rgba(59, 130, 246, 0.08);
 }
