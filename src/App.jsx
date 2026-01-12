@@ -1,20 +1,25 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { ProfileHeader, BlogGrid, BlogDetailsPage } from "./components";
 import { LanguageSwitcher, ThemeSwitcher } from "./components";
 import { blogDataByLanguage } from "./data/blogData";
 import { formatBlogPosts } from "./data/blogUtils";
 import { useI18n } from "./context/useI18n";
+import { buildIndex, searchPosts } from "./utils/search";
 
 function App() {
   const { t, language } = useI18n();
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Get blog posts based on current language
   const BLOG_POSTS = useMemo(() => {
     const posts = blogDataByLanguage[language] || blogDataByLanguage.en;
     return formatBlogPosts(posts);
   }, [language]);
+
+  // Build search index when posts change
+  const SEARCH_INDEX = useMemo(() => buildIndex(BLOG_POSTS), [BLOG_POSTS]);
 
   // Get the current post in the current language
   const selectedPost = useMemo(() => {
@@ -40,6 +45,19 @@ function App() {
       });
     }, 0);
   };
+
+  // Apply category + search filtering
+  const postsByCategory = useMemo(() => {
+    return activeCategory === "all"
+      ? BLOG_POSTS
+      : BLOG_POSTS.filter((post) => post.category === activeCategory);
+  }, [BLOG_POSTS, activeCategory]);
+
+  const visiblePosts = useMemo(() => {
+    return searchQuery.trim()
+      ? searchPosts(SEARCH_INDEX, postsByCategory, searchQuery)
+      : postsByCategory;
+  }, [SEARCH_INDEX, postsByCategory, searchQuery]);
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
@@ -69,8 +87,18 @@ function App() {
               <h2 className="text-3xl font-bebas text-gray-900 dark:text-white mb-8">
                 {t("blog.latestArticles")}
               </h2>
+              {/* Search input */}
+              <div className="mb-6">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={"Search title, content, tags, code"}
+                  className="w-full px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
               <BlogGrid
-                posts={BLOG_POSTS}
+                posts={visiblePosts}
                 activeCategory={activeCategory}
                 onPostClick={handlePostClick}
               />
