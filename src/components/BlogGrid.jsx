@@ -18,6 +18,7 @@ export default function BlogGrid({ posts, activeCategory, onPostClick }) {
             category={post.category}
             date={post.date}
             title={post.title}
+            readingMinutes={post.readingMinutes}
           />
         </div>
       ))}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { highlightCode } from "../utils/syntaxHighlight";
 import { useI18n } from "../context/useI18n";
 
@@ -10,6 +10,7 @@ export default function BlogDetailsPage({
 }) {
   const { t } = useI18n();
   const [copiedIdx, setCopiedIdx] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   // Get related articles from the same category
   const relatedArticles = allPosts
@@ -24,11 +25,30 @@ export default function BlogDetailsPage({
     });
   };
 
+  // Reading progress indicator
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setProgress(Math.min(100, Math.max(0, pct)));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   // Parse content if it's HTML string or render as is
   const renderContent = (content) => {
     // Remove code blocks from content to render separately
     const contentWithoutCode = content.replace(
-      /<pre><code>[\s\S]*?<\/code><\/pre>/g,
+      /<pre(?:\s+[^>]*)?><code>[\s\S]*?<\/code><\/pre>/g,
       ""
     );
 
@@ -90,14 +110,36 @@ export default function BlogDetailsPage({
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
+      {/* Top reading progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-60">
+        <div className="h-1 bg-gray-200 dark:bg-gray-800">
+          <div
+            className="h-1 bg-blue-500 transition-[width] duration-100"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
       <section className="bg-white dark:bg-gray-900 py-6 sm:py-8 lg:py-12 px-4 sm:px-6">
         {/* Back Button */}
         <div className="max-w-7xl mx-auto mb-6 sm:mb-8 mt-10">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors duration-200 font-medium text-sm sm:text-base"
+            className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 text-gray-700 dark:text-gray-300 hover:text-white transition-all duration-200 font-medium text-sm sm:text-base border border-gray-300 dark:border-gray-700 hover:border-blue-500 shadow-sm hover:shadow-md"
           >
-            <span className="text-lg sm:text-xl">←</span> {t("blog.back")}
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:-translate-x-1 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            {t("blog.back")}
           </button>
         </div>
 
@@ -141,8 +183,13 @@ export default function BlogDetailsPage({
               <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bebas text-gray-900 dark:text-white mb-3 sm:mb-4 leading-tight">
                 {post.title}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium">
-                {post.date}
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium flex items-center gap-2">
+                <span>{post.date}</span>
+                {post.readingMinutes ? (
+                  <span className="text-gray-500 dark:text-gray-500">
+                    • {post.readingMinutes} min read
+                  </span>
+                ) : null}
               </p>
             </article>
 
@@ -154,13 +201,17 @@ export default function BlogDetailsPage({
             {/* Code Blocks Rendered Properly */}
             <div className="my-12 space-y-6">
               {post.content
-                .match(/<pre><code>[\s\S]*?<\/code><\/pre>/g)
+                .match(/<pre(?:\s+[^>]*)?><code>[\s\S]*?<\/code><\/pre>/g)
                 ?.map((block, idx) => {
                   // Extract code without tags but keep entities
                   const codeWithEntities = block
-                    .replace(/<pre><code>/g, "")
+                    .replace(/<pre[^>]*><code>/g, "")
                     .replace(/<\/code><\/pre>/g, "")
                     .replace(/\\/g, "");
+
+                  // Extract language from data attribute if present
+                  const langMatch = block.match(/<pre[^>]*data-lang="([^"]+)"/);
+                  const langLabel = (langMatch?.[1] || "code").toLowerCase();
 
                   // Decode entities for copying to clipboard
                   const codeForClipboard = codeWithEntities
@@ -179,7 +230,7 @@ export default function BlogDetailsPage({
                             <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                           </div>
                           <span className="text-xs text-gray-300 dark:text-gray-400 font-mono ml-2">
-                            code
+                            {langLabel}
                           </span>
                         </div>
                         <button

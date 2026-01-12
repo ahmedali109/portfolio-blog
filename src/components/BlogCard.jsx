@@ -1,4 +1,4 @@
-export default function BlogCard({ category, date, title }) {
+export default function BlogCard({ category, date, title, readingMinutes }) {
   return (
     <article className="relative border border-gray-300 dark:border-gray-700/50 rounded-lg sm:rounded-xl p-4 sm:p-6 bg-white dark:bg-linear-to-br dark:from-gray-800 dark:to-gray-900 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 h-full flex flex-col group overflow-hidden backdrop-blur-sm">
       {/* Decorative gradient overlay */}
@@ -27,6 +27,25 @@ export default function BlogCard({ category, date, title }) {
             {date}
           </span>
         </div>
+        {readingMinutes && (
+          <div className="text-xs text-gray-500 dark:text-gray-500 font-medium flex items-center gap-1 mb-3 sm:mb-4">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {readingMinutes} min read
+          </div>
+        )}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"></div>
 
         <h3 className="text-base sm:text-lg font-bebas text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 flex-1 leading-tight mb-3">
           {title}
